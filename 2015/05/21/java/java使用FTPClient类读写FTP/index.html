@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>java使用FTPClient类读写FTP | Martin&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="1.首先先导入相关jar包  commons-logging-1.1.1.jar  commons-net-3.3.jar">
+<meta name="keywords" content="java,ftp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java使用FTPClient类读写FTP">
+<meta property="og:url" content="http:&#x2F;&#x2F;blog.majinjin.cn&#x2F;2015&#x2F;05&#x2F;21&#x2F;java&#x2F;java%E4%BD%BF%E7%94%A8FTPClient%E7%B1%BB%E8%AF%BB%E5%86%99FTP&#x2F;index.html">
+<meta property="og:site_name" content="Martin&#39;s Blog">
+<meta property="og:description" content="1.首先先导入相关jar包  commons-logging-1.1.1.jar  commons-net-3.3.jar">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-17T10:02:21.000Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Martin&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  
+    <link href="/css/fonts/font.css" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Martin&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://blog.majinjin.cn"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-java/java使用FTPClient类读写FTP" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/05/21/java/java%E4%BD%BF%E7%94%A8FTPClient%E7%B1%BB%E8%AF%BB%E5%86%99FTP/" class="article-date">
+  <time datetime="2015-05-21T00:55:48.000Z" itemprop="datePublished">2015-05-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/java/">java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      java使用FTPClient类读写FTP
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>1.首先先导入相关jar包</li>
+</ul>
+<pre><code>commons-logging-1.1.1.jar
+
+commons-net-3.3.jar</code></pre><a id="more"></a>
+
+<ul>
+<li><p>2.创建一个连接FTP的工具类FTPUtil.java</p>
+<pre><code>package com.metarnet.ftp.util;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.SocketException;
+import java.util.Properties;
+
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+import org.apache.log4j.Logger;
+
+public class FTPUtil {
+    private static Logger logger = Logger.getLogger(FTPUtil.class);</code></pre></li>
+</ul>
+<pre><code>    /**
+     * 获取FTPClient对象
+     * @param ftpHost FTP主机服务器
+     * @param ftpPassword FTP 登录密码
+     * @param ftpUserName FTP登录用户名
+     * @param ftpPort FTP端口 默认为21
+     * @return
+     */
+    public static FTPClient getFTPClient(String ftpHost, String ftpPassword,
+            String ftpUserName, int ftpPort) {
+        FTPClient ftpClient = null;
+        try {
+            ftpClient = new FTPClient();
+            ftpClient.connect(ftpHost, ftpPort);// 连接FTP服务器
+            ftpClient.login(ftpUserName, ftpPassword);// 登陆FTP服务器
+            if (!FTPReply.isPositiveCompletion(ftpClient.getReplyCode())) {
+                logger.info(&quot;未连接到FTP，用户名或密码错误。&quot;);
+                ftpClient.disconnect();
+            } else {
+                logger.info(&quot;FTP连接成功。&quot;);
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+            logger.info(&quot;FTP的IP地址可能错误，请正确配置。&quot;);
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.info(&quot;FTP的端口错误,请正确配置。&quot;);
+        }
+        return ftpClient;
+    }
+}</code></pre><ul>
+<li><p>3.编写一个读取FTP上文件的类ReadFTPFile.java</p>
+<pre><code>package com.metarnet.ftp.read;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.SocketException;
+
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.log4j.Logger;
+
+import com.metarnet.ftp.util.FTPUtil;
+
+public class ReadFTPFile {
+    private Logger logger = Logger.getLogger(ReadFTPFile.class);
+
+    /**
+     * 去 服务器的FTP路径下上读取文件
+     * 
+     * @param ftpUserName
+     * @param ftpPassword
+     * @param ftpPath
+     * @param FTPServer
+     * @return
+     */
+    public String readConfigFileForFTP(String ftpUserName, String ftpPassword,
+            String ftpPath, String ftpHost, int ftpPort, String fileName) {
+        StringBuffer resultBuffer = new StringBuffer();
+        FileInputStream inFile = null;
+        InputStream in = null;
+        FTPClient ftpClient = null;
+        logger.info(&quot;开始读取绝对路径&quot; + ftpPath + &quot;文件!&quot;);
+        try {
+            ftpClient = FTPUtil.getFTPClient(ftpHost, ftpPassword, ftpUserName,
+                    ftpPort);
+            ftpClient.setControlEncoding(&quot;UTF-8&quot;); // 中文支持
+            ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+            ftpClient.enterLocalPassiveMode();
+            ftpClient.changeWorkingDirectory(ftpPath);
+            in = ftpClient.retrieveFileStream(fileName);
+        } catch (FileNotFoundException e) {
+            logger.error(&quot;没有找到&quot; + ftpPath + &quot;文件&quot;);
+            e.printStackTrace();
+            return &quot;下载配置文件失败，请联系管理员.&quot;;
+        } catch (SocketException e) {
+            logger.error(&quot;连接FTP失败.&quot;);
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.error(&quot;文件读取错误。&quot;);
+            e.printStackTrace();
+            return &quot;配置文件读取失败，请联系管理员.&quot;;
+        }
+        if (in != null) {
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            String data = null;
+            try {
+                while ((data = br.readLine()) != null) {
+                    resultBuffer.append(data + &quot;\n&quot;);
+                }
+            } catch (IOException e) {
+                logger.error(&quot;文件读取错误。&quot;);
+                e.printStackTrace();
+                return &quot;配置文件读取失败，请联系管理员.&quot;;
+            }finally{
+                try {
+                    ftpClient.disconnect();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }else{
+            logger.error(&quot;in为空，不能读取。&quot;);
+            return &quot;配置文件读取失败，请联系管理员.&quot;;
+        }
+        return resultBuffer.toString();
+    }
+}</code></pre></li>
+</ul>
+<ul>
+<li><p>4.创建一个往FTP上写入文件的类WriteFTPFile.java</p>
+<pre><code>package com.metarnet.ftp.write;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.apache.log4j.Logger;
+
+import com.metarnet.ftp.util.FTPUtil;
+
+public class WriteFTPFile {
+
+    private Logger logger = Logger.getLogger(WriteFTPFile.class);
+
+    /**
+     * 本地上传文件到FTP服务器
+     * 
+     * @param ftpPath
+     *            远程文件路径FTP
+     * @throws IOException
+     */
+    public void upload(String ftpPath, String ftpUserName, String ftpPassword,
+            String ftpHost, int ftpPort, String fileContent,
+            String writeTempFielPath) {
+        FTPClient ftpClient = null;
+        logger.info(&quot;开始上传文件到FTP.&quot;);
+        try {
+            ftpClient = FTPUtil.getFTPClient(ftpHost, ftpPassword,
+                    ftpUserName, ftpPort);
+            // 设置PassiveMode传输
+            ftpClient.enterLocalPassiveMode();
+            // 设置以二进制流的方式传输
+            ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+            // 对远程目录的处理
+            String remoteFileName = ftpPath;
+            if (ftpPath.contains(&quot;/&quot;)) {
+                remoteFileName = ftpPath
+                        .substring(ftpPath.lastIndexOf(&quot;/&quot;) + 1);
+            }
+            // FTPFile[] files = ftpClient.listFiles(new
+            // String(remoteFileName));
+            // 先把文件写在本地。在上传到FTP上最后在删除
+            boolean writeResult = write(remoteFileName, fileContent,
+                    writeTempFielPath);
+            if (writeResult) {
+                File f = new File(writeTempFielPath + &quot;/&quot; + remoteFileName);
+                InputStream in = new FileInputStream(f);
+                ftpClient.storeFile(remoteFileName, in);
+                in.close();
+                logger.info(&quot;上传文件&quot; + remoteFileName + &quot;到FTP成功!&quot;);
+                f.delete();
+            } else {
+                logger.info(&quot;写文件失败!&quot;);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally{
+            try {
+                ftpClient.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 把配置文件先写到本地的一个文件中取
+     * 
+     * @param ftpPath
+     * @param str
+     * @return
+     */
+    public boolean write(String fileName, String fileContext,
+            String writeTempFielPath) {
+        try {
+            logger.info(&quot;开始写配置文件&quot;);
+            File f = new File(writeTempFielPath + &quot;/&quot; + fileName);
+            if(!f.exists()){
+                if(!f.createNewFile()){
+                    logger.info(&quot;文件不存在，创建失败!&quot;);
+                }
+            }
+            BufferedWriter bw = new BufferedWriter(new FileWriter(f, true));
+            bw.write(fileContext.replaceAll(&quot;\n&quot;, &quot;\r\n&quot;));
+            bw.flush();
+            bw.close();
+            return true;
+        } catch (Exception e) {
+            logger.error(&quot;写文件没有成功&quot;);
+            e.printStackTrace();
+            return false;
+        }
+    }
+}</code></pre></li>
+</ul>
+<ul>
+<li><p>5.建立一个测试类FTPMain.java</p>
+<pre><code>package com.metarnet.ftp.main;
+
+import java.io.InputStream;
+import java.util.Properties;
+
+import org.apache.log4j.Logger;
+
+import com.metarnet.ftp.read.ReadFTPFile;
+import com.metarnet.ftp.util.FTPUtil;
+import com.metarnet.ftp.write.WriteFTPFile;
+
+public class FTPMain {
+
+    private static Logger logger = Logger.getLogger(FTPMain.class);
+
+    public static void main(String[] args) {
+        int ftpPort = 0;
+        String ftpUserName = &quot;&quot;;
+        String ftpPassword = &quot;&quot;;
+        String ftpHost = &quot;&quot;;
+        String ftpPath = &quot;&quot;;
+        String writeTempFielPath = &quot;&quot;;
+        try {
+            InputStream in = FTPUtil.class.getClassLoader()
+                    .getResourceAsStream(&quot;env.properties&quot;);
+            if (in == null) {
+                logger.info(&quot;配置文件env.properties读取失败&quot;);
+            } else {
+                Properties properties = new Properties();
+                properties.load(in);
+                ftpUserName = properties.getProperty(&quot;ftpUserName&quot;);
+                ftpPassword = properties.getProperty(&quot;ftpPassword&quot;);
+                ftpHost = properties.getProperty(&quot;ftpHost&quot;);
+                ftpPort = Integer.valueOf(properties.getProperty(&quot;ftpPort&quot;))
+                        .intValue();
+                ftpPath = properties.getProperty(&quot;ftpPath&quot;);
+                writeTempFielPath = properties.getProperty(&quot;writeTempFielPath&quot;);
+
+                ReadFTPFile read = new ReadFTPFile();
+                String result = read.readConfigFileForFTP(ftpUserName, ftpPassword, ftpPath, ftpHost, ftpPort, &quot;huawei_220.248.192.200.cfg&quot;);
+                System.out.println(&quot;读取配置文件结果为：&quot; + result);
+
+                WriteFTPFile write = new WriteFTPFile();
+                ftpPath = ftpPath + &quot;/&quot; + &quot;huawei_220.248.192.200_new1.cfg&quot;;
+                write.upload(ftpPath, ftpUserName, ftpPassword, ftpHost, ftpPort, result, writeTempFielPath);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}</code></pre></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.majinjin.cn/2015/05/21/java/java%E4%BD%BF%E7%94%A8FTPClient%E7%B1%BB%E8%AF%BB%E5%86%99FTP/" data-id="ck3igqeqo001g3kup4el7bfxa" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ftp/" rel="tag">ftp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/05/21/java/apache-ftpClient-425-Cannot-open-passive-connection/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          apache ftpClient 425 Cannot open passive connection
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/05/21/java/java%E4%B8%8A%E4%BC%A0%E3%80%81%E4%B8%8B%E8%BD%BD%E3%80%81%E5%88%A0%E9%99%A4ftp%E6%96%87%E4%BB%B6/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">java上传、下载、删除ftp文件</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/easyUI/">easyUI</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/fitness/">fitness</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ibatis/">ibatis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jsp/">jsp</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/struts2/">struts2</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/easyUI/" rel="tag">easyUI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fitness/" rel="tag">fitness</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ftp/" rel="tag">ftp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ibatis/" rel="tag">ibatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/" rel="tag">javascript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jquery/" rel="tag">jquery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsp/" rel="tag">jsp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/struts2/" rel="tag">struts2</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/easyUI/" style="font-size: 15px;">easyUI</a> <a href="/tags/fitness/" style="font-size: 10px;">fitness</a> <a href="/tags/ftp/" style="font-size: 17.5px;">ftp</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/ibatis/" style="font-size: 12.5px;">ibatis</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/javascript/" style="font-size: 12.5px;">javascript</a> <a href="/tags/jquery/" style="font-size: 10px;">jquery</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/jsp/" style="font-size: 10px;">jsp</a> <a href="/tags/mysql/" style="font-size: 17.5px;">mysql</a> <a href="/tags/struts2/" style="font-size: 10px;">struts2</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/27/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/27/java/java%E5%BC%82%E5%B8%B8%E7%A7%8D%E7%B1%BB/">java异常种类</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/27/easyui/Jquery%E4%B8%ADeasyui%E8%A1%A8%E5%8D%95%E5%85%83%E7%B4%A0%E5%8F%96%E5%80%BC%E3%80%81%E8%B5%8B%E5%80%BC/">Jquery中easyui表单元素取值、赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/22/fitness/%E8%85%B0%E8%83%8C%E6%81%A2%E5%A4%8D%E5%B0%8F%E8%B4%B4%E5%A3%AB/">腰部久坐小贴士</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/21/java/%E8%AF%BB%E5%8F%96APK%E5%8C%85%E4%B8%AD%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6AndroidManifest-xml%E4%B8%AD%E7%9A%84%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF/">读取APK包中配置文件AndroidManifest.xml中的版本信息</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 Majinjin<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

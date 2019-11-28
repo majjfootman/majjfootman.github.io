@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Jquery中easyui表单元素取值、赋值 | Martin&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="####1.Input  validatebox  定义： &amp;lt;input type&#x3D;&amp;quot;text&amp;quot; name&#x3D;&amp;quot;APPLYDEPTNAME&amp;quot; id&#x3D;&amp;quot;APPLYDEPTNAME&amp;quot; style&#x3D;&amp;quot;width: 99%&amp;quot;                       maxlength&#x3D;&amp;quot;50&amp;quot; cl">
+<meta name="keywords" content="easyUI,jquery">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jquery中easyui表单元素取值、赋值">
+<meta property="og:url" content="http:&#x2F;&#x2F;blog.majinjin.cn&#x2F;2015&#x2F;05&#x2F;27&#x2F;easyui&#x2F;Jquery%E4%B8%ADeasyui%E8%A1%A8%E5%8D%95%E5%85%83%E7%B4%A0%E5%8F%96%E5%80%BC%E3%80%81%E8%B5%8B%E5%80%BC&#x2F;index.html">
+<meta property="og:site_name" content="Martin&#39;s Blog">
+<meta property="og:description" content="####1.Input  validatebox  定义： &amp;lt;input type&#x3D;&amp;quot;text&amp;quot; name&#x3D;&amp;quot;APPLYDEPTNAME&amp;quot; id&#x3D;&amp;quot;APPLYDEPTNAME&amp;quot; style&#x3D;&amp;quot;width: 99%&amp;quot;                       maxlength&#x3D;&amp;quot;50&amp;quot; cl">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-17T10:02:21.000Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Martin&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  
+    <link href="/css/fonts/font.css" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Martin&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://blog.majinjin.cn"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-easyui/Jquery中easyui表单元素取值、赋值" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/05/27/easyui/Jquery%E4%B8%ADeasyui%E8%A1%A8%E5%8D%95%E5%85%83%E7%B4%A0%E5%8F%96%E5%80%BC%E3%80%81%E8%B5%8B%E5%80%BC/" class="article-date">
+  <time datetime="2015-05-27T02:44:03.000Z" itemprop="datePublished">2015-05-27</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/easyUI/">easyUI</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Jquery中easyui表单元素取值、赋值
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>####1.Input</p>
+<ul>
+<li>validatebox</li>
+</ul>
+<p>定义：</p>
+<pre><code>&lt;input type=&quot;text&quot; name=&quot;APPLYDEPTNAME&quot; id=&quot;APPLYDEPTNAME&quot; style=&quot;width: 99%&quot;
+                      maxlength=&quot;50&quot; class=&quot;easyui-validatebox&quot; data-options=&quot;required:true&quot; /&gt;</code></pre><p>赋值：</p>
+<pre><code>$(&quot;#APPLYDEPTNAME&quot;).val(&apos;1212&apos;);</code></pre><a id="more"></a>
+
+<p>取值：</p>
+<pre><code>$(&quot;#APPLYDEPTNAME&quot;).val();</code></pre><ul>
+<li>ComboBox</li>
+</ul>
+<p>定义：</p>
+<pre><code>&lt;td colspan=&quot;5&quot;&gt;
+            城市:
+            &lt;input id=&quot;city&quot; style=&quot;width: 80px&quot; class=&quot;easyui-combobox&quot; data-options=&quot; valueField: &apos;CityAreaCode&apos;, textField: &apos;CityAreaName&apos;, url: &apos;../../Ajax/InforService.ashx?Method=GetCity&apos;,  
+
+                 onSelect: function(rec){  
+                 var url = &apos;../../Ajax/InforService.ashx?Method=GetArea&amp;CityAreaCode=&apos;+rec.CityAreaCode;  
+
+                 $(&apos;#area&apos;).combobox(&apos;reload&apos;, url);
+                 $(&apos;#area&apos;).combobox(&apos;setValues&apos;, &apos;&apos;);
+
+                  }&quot; /&gt;
+            区县:
+            &lt;input id=&quot;area&quot; class=&quot;easyui-combobox&quot; data-options=&quot;valueField:&apos;CityAreaCode&apos;,textField:&apos;CityAreaName&apos;&quot; /&gt;
+            街道:
+            &lt;input type=&quot;text&quot; value=&quot;&quot; onchange=&quot;doValue(this.value)&quot; style=&quot;width: 45%&quot; name=&quot;SC001_APPLYDEPTADDRESS&quot;
+                maxlength=&quot;23&quot; class=&quot;easyui-validatebox&quot; id=&quot;SC001_APPLYDEPTADDRESS&quot; data-options=&quot;required:true&quot; /&gt;</code></pre><p>赋值：</p>
+<pre><code>$(&quot;#city2&quot;).combobox(&quot;getValues&quot;)
+$(&quot;#city&quot;).combobox(&quot;getValues&quot;) + &quot;,&quot; + $(&quot;#area&quot;).combobox(&quot;getValues&quot;) + &quot;,&quot; + $(&quot;#SC001_APPLYDEPTADDRESS&quot;).val(),</code></pre><p>取值：</p>
+<pre><code>$(&apos;#city&apos;).combobox(&apos;setValue&apos;, ‘北京’);
+回显：
+                //公司地址
+                var str4 = result.APPLYDEPTADDRESS;
+                if (str4 != null) {
+                    var strs4 = new Array();
+                    strs4 = str4.split(&quot;,&quot;);
+                    $(&apos;#city&apos;).combobox(&apos;setValue&apos;, strs4[0]);
+                    var url = &apos;../../Ajax/InforService.ashx?Method=GetArea&amp;CityAreaCode=&apos; + strs4[0];
+                    $(&apos;#area&apos;).combobox(&apos;reload&apos;, url);
+                    $(&apos;#area&apos;).combobox(&apos;setValue&apos;, strs4[1]);
+                    $(&quot;#APPLYDEPTADDRESS&quot;).val(strs4[2]);
+                }</code></pre><ul>
+<li>NumberBox</li>
+</ul>
+<p>定义：</p>
+<pre><code>&lt;input type=&quot;text&quot; class=&quot;easyui-numberbox&quot; maxlength=&quot;20&quot; name=&quot;nn&quot; id=&quot;nn&quot; /&gt;</code></pre><p>赋值：</p>
+<pre><code>$(&apos;#nn&apos;).numberbox(&apos;setValue&apos;, 206.12);</code></pre><p>取值：</p>
+<pre><code>var v = $(&apos;#nn&apos;).numberbox(&apos;getValue&apos;);</code></pre><ul>
+<li>DateBox</li>
+</ul>
+<p>定义：</p>
+<pre><code>&lt;input type=&quot;text&quot; name=&quot;nn&quot; id=&quot;nn&quot; class=&quot;easyui-datebox&quot;
+   data-options=&quot;formatter:myDate.InitDateBox.formatter,parser:myDate.InitDateBox. parser&quot; /&gt;</code></pre><p>赋值：</p>
+<pre><code>$(&quot;#SC001_CERTIFICATEVALID&quot;).datebox(&apos;setValue&apos;, &apos;2014-9-12&apos;);</code></pre><p>取值：</p>
+<pre><code>$(&apos;#nn&apos;).datebox(&apos;getValue&apos;);</code></pre><ul>
+<li>NumberSpinner </li>
+</ul>
+<p>定义：</p>
+<pre><code>&lt;input id=&quot;ss&quot; class=&quot;easyui-numberspinner&quot; style=&quot;width:80px;&quot;  
+    required=&quot;required&quot; data-options=&quot;min:10,max:100,editable:false&quot;&gt;  </code></pre><p>赋值：</p>
+<pre><code>$(&apos;#ss&apos;).numberspinner(&apos;setValue&apos;, 8234725);  </code></pre><p>取值：</p>
+<pre><code>var v = $(&apos;#ss&apos;).numberspinner(&apos;getValue&apos;);  </code></pre><ul>
+<li>menubutton</li>
+</ul>
+<p>定义：</p>
+<pre><code>&lt;a href=&quot;javascript:void(0)&quot; id=&quot;mb&quot; name=&quot;mb&quot; disabled=&quot;true&quot; class=&quot;easyui-menubutton&quot;   
+data-options=&quot;menu:&apos;#mm&apos;,iconCls:&apos;icon-edit&apos; &quot;&gt;确认&lt;/a&gt;  
+&lt;div id=&quot;mm&quot; name=&quot;mm&quot;style=&quot;width:150px;&quot;&gt;  
+&lt;div data-options=&quot;iconCls:&apos;icon-undo&apos;&quot; onclick=&quot;initTool.Check(&apos;确认通过&apos;)&quot;&gt;确认通过&lt;/div&gt;  
+&lt;div data-options=&quot;iconCls:&apos;icon-redo&apos;&quot; onclick=&quot;initTool.Check(&apos;确认不通过&apos;)&quot;&gt;确认不通过&lt;/div&gt;
+&lt;/div&gt;</code></pre><p>####2.Radio</p>
+<p>定义</p>
+<pre><code>&lt;td height=&quot;30&quot; colspan=&quot;5&quot;&gt;
+&lt;input type=&quot;radio&quot; name=&quot;APPLYDEPTTYPE&quot; value=&quot;事业法人&quot; checked=&quot;checked&quot; /&gt;事业法人
+&lt;input type=&quot;radio&quot; name=&quot;APPLYDEPTTYPE&quot; value=&quot;企业法人&quot; /&gt;企业法人
+&lt;input type=&quot;radio&quot; name=&quot;APPLYDEPTTYPE&quot; value=&quot;社团法人&quot; /&gt;社团法人
+&lt;input type=&quot;radio&quot; name=&quot;APPLYDEPTTYPE&quot; value=&quot;其他&quot; /&gt;其他
+&lt;/td&gt;</code></pre><p>赋值：</p>
+<pre><code>var str = result.APPLYDEPTTYPE;
+$(&quot;[value=&apos;&quot; + str + &quot;&apos;]&quot;).attr(&quot;checked&quot;, true);</code></pre><p>取值：</p>
+<pre><code>$(&apos;input[name=&quot;APPLYDEPTTYPE&quot;]:checked&apos;).val();</code></pre><p>radio只读:</p>
+<p>JQuery 控制 radio 只读</p>
+<p>　　一、想让radio只读，就是想radio不可以修改。有一种场景是：让没有选中的radio不可以修改。代码如下：</p>
+<pre><code>$(&quot;input[name=&apos;tempProduct.isMustInvoice&apos;][value=&apos;0&apos;]&quot;).attr(&quot;disabled&quot;,true);</code></pre><p>　　将值为0的radio设置不可以修改，这种设置的好外是：选中的radio值可以传入后台进行操作。</p>
+<p>　　二、设置可修改的代码：</p>
+<pre><code>$(&quot;input[name=&apos;tempProduct.isMustInvoice&apos;][value=&apos;0&apos;]&quot;).attr(&quot;disabled&quot;,false);</code></pre><p>　　三、将所的radio设置为只读</p>
+<pre><code>$(&quot;input[name=&apos;tempProduct.isMustInvoice&apos;]&quot;).each(function(){ $(this).attr(&quot;disabled&quot;,true); });</code></pre><p>####3.checkbox</p>
+<p>定义：</p>
+<pre><code>&lt;td height=&quot;60&quot; colspan=&quot;5&quot;&gt;
+&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp &amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp
+&lt;input type=&quot;checkbox&quot; name=&quot;BUSINESSSCOPE&quot; value=&quot;水&quot; /&gt;水 &amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp
+&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp
+&lt;input type=&quot;checkbox&quot; name=&quot;BUSINESSSCOPE&quot; value=&quot;空气&quot; /&gt;空气 &amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp
+&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp
+&lt;input type=&quot;checkbox&quot; name=&quot;BUSINESSSCOPE&quot; value=&quot;土壤&quot; /&gt;土壤&lt;/br&gt;
+&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp &amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp
+&lt;input type=&quot;checkbox&quot; name=&quot;BUSINESSSCOPE&quot; value=&quot;噪声&quot; /&gt;
+噪声 &amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp &amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp
+&lt;input type=&quot;checkbox&quot; name=&quot;BUSINESSSCOPE&quot; value=&quot;生物&quot; /&gt;生物
+&lt;/td&gt;</code></pre><p>赋值：</p>
+<pre><code>var str3 = result.BUSINESSSCOPE;
+        if (str3 != null) {
+            var strs = new Array();
+
+            strs = str3.split(&quot;,&quot;);
+            for (i = 0; i &lt; strs.length; i++)
+            { $(&quot;[value=&apos;&quot; + strs[i] + &quot;&apos;]&quot;).attr(&quot;checked&quot;, true) };
+        }</code></pre><p>取值：</p>
+<pre><code>var isc = &quot;&quot;;
+$(&quot;input[name=&apos;BUSINESSSCOPE&apos;]:checked&quot;).each(function () { //遍历table里的全部checkbox
+isc += $(this).val() + &quot;,&quot;; //获取被选中的值
+});
+
+if (isc.length &gt; 0) //如果获取到
+isc = isc.substring(0, isc.length - 1); //把最后一个逗号去掉string isc就是值</code></pre><p>####4.TextArea</p>
+<p>定义：</p>
+<pre><code>&lt;textarea cols=&quot;25&quot; rows=&quot;3&quot; name=&quot;BUSINESSALLOW&quot; id=&quot;BUSINESSALLOW&quot; onpropertychange=&quot;if(this.value.length&gt;100){this.value=this.value.substr(0,100)}&quot; class=&quot;easyui-validatebox&quot; style=&quot;width: 99%; height: 99%&quot; data-options=&quot;required:true&quot;&gt;&lt;/textarea&gt;</code></pre><p>赋值和取值与Input标签相同。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.majinjin.cn/2015/05/27/easyui/Jquery%E4%B8%ADeasyui%E8%A1%A8%E5%8D%95%E5%85%83%E7%B4%A0%E5%8F%96%E5%80%BC%E3%80%81%E8%B5%8B%E5%80%BC/" data-id="ck3igqeq3000n3kupcved1xb6" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/easyUI/" rel="tag">easyUI</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jquery/" rel="tag">jquery</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/05/27/java/java%E5%BC%82%E5%B8%B8%E7%A7%8D%E7%B1%BB/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          java异常种类
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/05/22/fitness/%E8%85%B0%E8%83%8C%E6%81%A2%E5%A4%8D%E5%B0%8F%E8%B4%B4%E5%A3%AB/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">腰部久坐小贴士</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/easyUI/">easyUI</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/fitness/">fitness</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ibatis/">ibatis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jsp/">jsp</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/struts2/">struts2</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/easyUI/" rel="tag">easyUI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fitness/" rel="tag">fitness</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ftp/" rel="tag">ftp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ibatis/" rel="tag">ibatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/" rel="tag">javascript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jquery/" rel="tag">jquery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsp/" rel="tag">jsp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/struts2/" rel="tag">struts2</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/easyUI/" style="font-size: 15px;">easyUI</a> <a href="/tags/fitness/" style="font-size: 10px;">fitness</a> <a href="/tags/ftp/" style="font-size: 17.5px;">ftp</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/ibatis/" style="font-size: 12.5px;">ibatis</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/javascript/" style="font-size: 12.5px;">javascript</a> <a href="/tags/jquery/" style="font-size: 10px;">jquery</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/jsp/" style="font-size: 10px;">jsp</a> <a href="/tags/mysql/" style="font-size: 17.5px;">mysql</a> <a href="/tags/struts2/" style="font-size: 10px;">struts2</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/27/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/27/java/java%E5%BC%82%E5%B8%B8%E7%A7%8D%E7%B1%BB/">java异常种类</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/27/easyui/Jquery%E4%B8%ADeasyui%E8%A1%A8%E5%8D%95%E5%85%83%E7%B4%A0%E5%8F%96%E5%80%BC%E3%80%81%E8%B5%8B%E5%80%BC/">Jquery中easyui表单元素取值、赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/22/fitness/%E8%85%B0%E8%83%8C%E6%81%A2%E5%A4%8D%E5%B0%8F%E8%B4%B4%E5%A3%AB/">腰部久坐小贴士</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/21/java/%E8%AF%BB%E5%8F%96APK%E5%8C%85%E4%B8%AD%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6AndroidManifest-xml%E4%B8%AD%E7%9A%84%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF/">读取APK包中配置文件AndroidManifest.xml中的版本信息</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 Majinjin<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

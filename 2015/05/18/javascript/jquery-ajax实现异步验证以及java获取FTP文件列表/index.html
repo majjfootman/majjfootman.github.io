@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>jquery ajax实现异步验证以及java获取FTP文件列表 | Martin&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="####html中的写法 &amp;lt;input type&#x3D;&amp;quot;text&amp;quot; id&#x3D;&amp;quot;app_name&amp;quot; name&#x3D;&amp;quot;appInfo.app_name&amp;quot; onblur&#x3D;&amp;quot;loadXMLDoc();&amp;quot; onfocus&#x3D;&amp;quot;delData();&amp;quot;&#x2F;&amp;gt; &amp;lt;div id&#x3D;&amp;quot;accDiv&amp;quot">
+<meta name="keywords" content="java,javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jquery ajax实现异步验证以及java获取FTP文件列表">
+<meta property="og:url" content="http:&#x2F;&#x2F;blog.majinjin.cn&#x2F;2015&#x2F;05&#x2F;18&#x2F;javascript&#x2F;jquery-ajax%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E9%AA%8C%E8%AF%81%E4%BB%A5%E5%8F%8Ajava%E8%8E%B7%E5%8F%96FTP%E6%96%87%E4%BB%B6%E5%88%97%E8%A1%A8&#x2F;index.html">
+<meta property="og:site_name" content="Martin&#39;s Blog">
+<meta property="og:description" content="####html中的写法 &amp;lt;input type&#x3D;&amp;quot;text&amp;quot; id&#x3D;&amp;quot;app_name&amp;quot; name&#x3D;&amp;quot;appInfo.app_name&amp;quot; onblur&#x3D;&amp;quot;loadXMLDoc();&amp;quot; onfocus&#x3D;&amp;quot;delData();&amp;quot;&#x2F;&amp;gt; &amp;lt;div id&#x3D;&amp;quot;accDiv&amp;quot">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-17T10:02:21.000Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Martin&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  
+    <link href="/css/fonts/font.css" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Martin&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://blog.majinjin.cn"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-javascript/jquery-ajax实现异步验证以及java获取FTP文件列表" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/05/18/javascript/jquery-ajax%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E9%AA%8C%E8%AF%81%E4%BB%A5%E5%8F%8Ajava%E8%8E%B7%E5%8F%96FTP%E6%96%87%E4%BB%B6%E5%88%97%E8%A1%A8/" class="article-date">
+  <time datetime="2015-05-18T07:09:59.000Z" itemprop="datePublished">2015-05-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/javascript/">javascript</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      jquery ajax实现异步验证以及java获取FTP文件列表
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>####html中的写法</p>
+<pre><code>&lt;input type=&quot;text&quot; id=&quot;app_name&quot; name=&quot;appInfo.app_name&quot; onblur=&quot;loadXMLDoc();&quot; onfocus=&quot;delData();&quot;/&gt;
+&lt;div id=&quot;accDiv&quot; style=&quot;color:#F00&quot;&gt;&lt;/div&gt;</code></pre><a id="more"></a>
+
+
+<p>####javascript中的写法</p>
+<pre><code>function loadXMLDoc() {
+    if (document.getElementById(&quot;app_name&quot;).value == &quot;&quot;) {
+        document.getElementById(&quot;accDiv&quot;).innerHTML = &quot;用户名不能为空&quot;;
+        return;
+    }
+    var xmlHttp;
+    if(window.XMLHttpRequest) { // code for IE7+
+        xmlHttp = new XMLHttpRequest();
+    }
+    else { // code for IE5/IE6
+        xmlHttp = new ActiveXObject(&quot;Microsoft.XMLHTTP&quot;);
+    }
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 &amp;&amp; xmlHttp.status == 200) {
+            if (xmlHttp.responseText == &quot;false&quot;) {
+                document.getElementById(&quot;accDiv&quot;).innerHTML = &quot;文件名不可用，已存在！&quot;;
+                isRightFilename = false;
+            }
+            else {
+                document.getElementById(&quot;accDiv&quot;).innerHTML = &quot;文件名可用&quot;;
+                isRightFilename = true;
+            }
+        }
+    }
+    var a = document.getElementById(&quot;app_name&quot;).value;
+    // get
+    xmlHttp.open(&quot;GET&quot;, &quot;***.action?appInfo.app_name=&quot; + a + &quot;&amp;random=&quot; + Math.random, true);
+    xmlHttp.send();
+}
+function delData() {
+    document.getElementById(&quot;app_name&quot;).value = &quot;&quot;;
+    document.getElementById(&quot;accDiv&quot;).innerHTML = &quot;&quot;;
+}</code></pre><p>####action中的写法</p>
+<pre><code>public void validateVersionsInformation() throws IOException{
+
+    try {
+    if(appManager.exitFIleName(appInfo.getApp_name() + &quot;.apk&quot;))
+
+            getResponse().getWriter().print(&quot;false&quot;);
+    else 
+        getResponse().getWriter().print(&quot;true&quot;);
+
+} catch (Exception e) {
+    e.printStackTrace();
+}
+}</code></pre><p>####FTP工具类中的写法</p>
+<pre><code>//返回FTP目录下文件列表
+public String[] getFileNameList() throws IOException 
+{ 
+   if(!connectToTheServer())
+ return null;
+   return ftpClient.listNames(); 
+
+}</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.majinjin.cn/2015/05/18/javascript/jquery-ajax%E5%AE%9E%E7%8E%B0%E5%BC%82%E6%AD%A5%E9%AA%8C%E8%AF%81%E4%BB%A5%E5%8F%8Ajava%E8%8E%B7%E5%8F%96FTP%E6%96%87%E4%BB%B6%E5%88%97%E8%A1%A8/" data-id="ck3igqerj00333kuph3i384vi" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/javascript/" rel="tag">javascript</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/05/21/java/java%E4%B8%8A%E4%BC%A0%E3%80%81%E4%B8%8B%E8%BD%BD%E3%80%81%E5%88%A0%E9%99%A4ftp%E6%96%87%E4%BB%B6/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          java上传、下载、删除ftp文件
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/05/15/javascript/js%E8%BD%AC%E6%8D%A2-Fri-Sep-16-00-00-00-UTC-0800-2011-%E6%A0%BC%E5%BC%8F%E6%97%B6%E9%97%B4%E5%87%BD%E6%95%B0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">js转换 Fri Sep 16 00:00:00 UTC+0800 2011 格式时间函数</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/easyUI/">easyUI</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/fitness/">fitness</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ibatis/">ibatis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jsp/">jsp</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/struts2/">struts2</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/easyUI/" rel="tag">easyUI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fitness/" rel="tag">fitness</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ftp/" rel="tag">ftp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ibatis/" rel="tag">ibatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/" rel="tag">javascript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jquery/" rel="tag">jquery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsp/" rel="tag">jsp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/struts2/" rel="tag">struts2</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/easyUI/" style="font-size: 15px;">easyUI</a> <a href="/tags/fitness/" style="font-size: 10px;">fitness</a> <a href="/tags/ftp/" style="font-size: 17.5px;">ftp</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/ibatis/" style="font-size: 12.5px;">ibatis</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/javascript/" style="font-size: 12.5px;">javascript</a> <a href="/tags/jquery/" style="font-size: 10px;">jquery</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/jsp/" style="font-size: 10px;">jsp</a> <a href="/tags/mysql/" style="font-size: 17.5px;">mysql</a> <a href="/tags/struts2/" style="font-size: 10px;">struts2</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/27/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/27/java/java%E5%BC%82%E5%B8%B8%E7%A7%8D%E7%B1%BB/">java异常种类</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/27/easyui/Jquery%E4%B8%ADeasyui%E8%A1%A8%E5%8D%95%E5%85%83%E7%B4%A0%E5%8F%96%E5%80%BC%E3%80%81%E8%B5%8B%E5%80%BC/">Jquery中easyui表单元素取值、赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/22/fitness/%E8%85%B0%E8%83%8C%E6%81%A2%E5%A4%8D%E5%B0%8F%E8%B4%B4%E5%A3%AB/">腰部久坐小贴士</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/21/java/%E8%AF%BB%E5%8F%96APK%E5%8C%85%E4%B8%AD%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6AndroidManifest-xml%E4%B8%AD%E7%9A%84%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF/">读取APK包中配置文件AndroidManifest.xml中的版本信息</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 Majinjin<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

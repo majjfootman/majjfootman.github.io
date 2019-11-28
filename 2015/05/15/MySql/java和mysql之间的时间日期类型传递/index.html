@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>java和mysql之间的时间日期类型传递 | Martin&#39;s Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="###mysql（版本：5.1.50）的时间日期类型如下： datetime 8bytes xxxx-xx-xx xx:xx:xx 1000-01-01 00:00:00到9999-12-31 23:59:59 timestamp 4bytes xxxx-xx-xx xx:xx:xx 1970-01-01 00:00:01到2038 date 3bytes xxxx-xx-xx 1000-01-0">
+<meta name="keywords" content="mysql,java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java和mysql之间的时间日期类型传递">
+<meta property="og:url" content="http:&#x2F;&#x2F;blog.majinjin.cn&#x2F;2015&#x2F;05&#x2F;15&#x2F;MySql&#x2F;java%E5%92%8Cmysql%E4%B9%8B%E9%97%B4%E7%9A%84%E6%97%B6%E9%97%B4%E6%97%A5%E6%9C%9F%E7%B1%BB%E5%9E%8B%E4%BC%A0%E9%80%92&#x2F;index.html">
+<meta property="og:site_name" content="Martin&#39;s Blog">
+<meta property="og:description" content="###mysql（版本：5.1.50）的时间日期类型如下： datetime 8bytes xxxx-xx-xx xx:xx:xx 1000-01-01 00:00:00到9999-12-31 23:59:59 timestamp 4bytes xxxx-xx-xx xx:xx:xx 1970-01-01 00:00:01到2038 date 3bytes xxxx-xx-xx 1000-01-0">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-17T10:02:21.000Z">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Martin&#39;s Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  
+    <link href="/css/fonts/font.css" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Martin&#39;s Blog</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://blog.majinjin.cn"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-MySql/java和mysql之间的时间日期类型传递" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/05/15/MySql/java%E5%92%8Cmysql%E4%B9%8B%E9%97%B4%E7%9A%84%E6%97%B6%E9%97%B4%E6%97%A5%E6%9C%9F%E7%B1%BB%E5%9E%8B%E4%BC%A0%E9%80%92/" class="article-date">
+  <time datetime="2015-05-15T07:58:45.000Z" itemprop="datePublished">2015-05-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      java和mysql之间的时间日期类型传递
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>###mysql（版本：5.1.50）的时间日期类型如下：</p>
+<pre><code>datetime 8bytes xxxx-xx-xx xx:xx:xx 1000-01-01 00:00:00到9999-12-31 23:59:59
+timestamp 4bytes xxxx-xx-xx xx:xx:xx 1970-01-01 00:00:01到2038
+date 3bytes xxxx-xx-xx 1000-01-01到9999-12-31
+year 1bytes xxxx 1901到2155
+time 3bytes xx:xx:xx -838:59:59到838:59:59(为了满足时间的加减运算)</code></pre><a id="more"></a>
+
+
+<p>###java（1.6） 中能保存时间日期类型的类主要有</p>
+<pre><code>java.util.Date
+
+java.util.Calendar
+
+java.sql.Date
+
+java.sql.Time
+
+java.sql.Timestamp</code></pre><p> 以前从mysql中查询出来的时间日期类型，都放在java.util.Date类型里面了。这样带来一系列的问题，首先这个类提供的时间操作函数太少，一般都需要转换成java.util.Calendar再去操作；其次即使使用了java.util.Calendar，也不是很方便，一个很简单的想法，需要写很多代码才能实现；java.util.Date的数据内容为xxxx-xx-xx xx:xx:xx，有时候不需要时间，只需要日期。从数据库中取值出来的日期类型放到这个类中的时候，会在时间位自动补上当前时间。这使得本来两个日期在数据库中是相等的，取出来放到这个类得时候就不再相等了，需要去考虑时间上的误差，很是头疼。</p>
+<p>###java提供与mysql方便交互的三种数据类型</p>
+<pre><code>java.sql.Date
+
+java.sql.Time
+
+java.sql.Timestamp</code></pre><p>它们都是继承java.util.Date，算是对该类的精简，很适合跟数据库交互。</p>
+<pre><code>===========java注入数据库==========
+
+java类型   mysql类型        成功与否
+date         date               yes
+date         time               no
+date         timestamp       no
+date         datetime         no
+
+time         date               no
+time         time               yes
+time         timestamp       no
+time         datetime         no
+
+timestamp date              yes
+timestamp time              yes
+timestamp timestamp     yes
+timestamp datetime        yes
+==========end java注入数据库========</code></pre><p>总规律，如果A完全包含B，则A可以向B注入数据，否则报错</p>
+<pre><code>==========从数据库提取到java ==========
+
+mysql类型    java类型     成与否
+date             date         yes
+date             time         yes --------------缺少的部分使用历元
+date           timestamp   yes --------------缺少的部分使用历元  
+
+time           date           yes --------------缺少的部分使用历元
+time           time           yes
+time          timestamp    yes --------------缺少的部分使用历元
+
+timestamp date           yes
+timestamp time           yes
+timestamp timestamp   yes
+
+datetime      date         yes
+datetime      time         yes
+datetime    timestamp   yes
+==========end 从数据库提取到java=======</code></pre><p>不会出错，缺少的部分使用历元，而不是当前日期时间</p>
+<pre><code>null to db(null) =====&gt; 也是null  
+null to db(not null)=======&gt; 数据库报错
+db(null) to java==========&gt; 如果单字段出来，则整个entity都是null，如果带着其他不是null的字段出来，则可以实例化entity，本身字段依然是null
+db(not null) to java==========&gt; 如果包含日期，则报错，否则为000</code></pre><p>最优解决方案，定义成可以为null</p>
+<p>java.sql时间系统的运算系列</p>
+<p>after,before<br>compareTo原小于参数返回&lt;0，等于返回=0，大于返回&gt;0</p>
+<p>优点：于数据库同类型，可以方便传输（无论是从DB到src还是反方向），方便比较大小<br>缺点：缺少运算单元，不适合时间跳跃的运算和间隔的运算</p>
+<p>总结：calendar具有强大的跳跃运算和间隔运算能力，在需要的时候，可以将sql系列的时间转成calendar。<br>先设置calendar为历元，然后从sql系列时间中转换，最后再转回sql系列时间。<br>calendar只用于时间有跳跃的转换，对比运算统一使用sql系统，这样代码将更清晰</p>
+<p>date 和 calendar怎么初始化为格林威治时间</p>
+<pre><code>new date(0)
+calendar.setTimeInMillis(0)</code></pre><p>sql系列时间</p>
+<pre><code>static valueOf</code></pre><p>new XX(0)获得历元<br>new XX(year+1900, month+1,day,hour,minute,second,nano)已过时，创建也没错</p>
+<p>toString或者SimpleDateFormat</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://blog.majinjin.cn/2015/05/15/MySql/java%E5%92%8Cmysql%E4%B9%8B%E9%97%B4%E7%9A%84%E6%97%B6%E9%97%B4%E6%97%A5%E6%9C%9F%E7%B1%BB%E5%9E%8B%E4%BC%A0%E9%80%92/" data-id="ck3igqepu00093kupfeh6fq6o" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/05/15/JSP/JSP%E9%A1%B5%E9%9D%A2%E6%97%A5%E6%9C%9F%E6%8C%89%E6%A0%BC%E5%BC%8F%E6%98%BE%E7%A4%BA/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          JSP页面日期按格式显示
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/05/15/SSH/struts2%E7%9A%84Action%E4%B8%AD%E5%8F%AF%E4%B8%8D%E5%8F%AF%E4%BB%A5%E7%94%A8static%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">struts2的Action中可不可以用static成员变量</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/easyUI/">easyUI</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/fitness/">fitness</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/hexo/">hexo</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ibatis/">ibatis</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/javascript/">javascript</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/jsp/">jsp</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/struts2/">struts2</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Android/" rel="tag">Android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/easyUI/" rel="tag">easyUI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/fitness/" rel="tag">fitness</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ftp/" rel="tag">ftp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ibatis/" rel="tag">ibatis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/" rel="tag">javascript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jquery/" rel="tag">jquery</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/json/" rel="tag">json</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/jsp/" rel="tag">jsp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/struts2/" rel="tag">struts2</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Android/" style="font-size: 10px;">Android</a> <a href="/tags/easyUI/" style="font-size: 15px;">easyUI</a> <a href="/tags/fitness/" style="font-size: 10px;">fitness</a> <a href="/tags/ftp/" style="font-size: 17.5px;">ftp</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/ibatis/" style="font-size: 12.5px;">ibatis</a> <a href="/tags/java/" style="font-size: 20px;">java</a> <a href="/tags/javascript/" style="font-size: 12.5px;">javascript</a> <a href="/tags/jquery/" style="font-size: 10px;">jquery</a> <a href="/tags/json/" style="font-size: 10px;">json</a> <a href="/tags/jsp/" style="font-size: 10px;">jsp</a> <a href="/tags/mysql/" style="font-size: 17.5px;">mysql</a> <a href="/tags/struts2/" style="font-size: 10px;">struts2</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/11/27/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/27/java/java%E5%BC%82%E5%B8%B8%E7%A7%8D%E7%B1%BB/">java异常种类</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/27/easyui/Jquery%E4%B8%ADeasyui%E8%A1%A8%E5%8D%95%E5%85%83%E7%B4%A0%E5%8F%96%E5%80%BC%E3%80%81%E8%B5%8B%E5%80%BC/">Jquery中easyui表单元素取值、赋值</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/22/fitness/%E8%85%B0%E8%83%8C%E6%81%A2%E5%A4%8D%E5%B0%8F%E8%B4%B4%E5%A3%AB/">腰部久坐小贴士</a>
+          </li>
+        
+          <li>
+            <a href="/2015/05/21/java/%E8%AF%BB%E5%8F%96APK%E5%8C%85%E4%B8%AD%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6AndroidManifest-xml%E4%B8%AD%E7%9A%84%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF/">读取APK包中配置文件AndroidManifest.xml中的版本信息</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 Majinjin<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
